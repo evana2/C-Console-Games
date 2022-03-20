@@ -2,11 +2,12 @@
 //
 
 #include "ConnectFour.h"
-
+#include "TicTacToe.h"
 int main()
 {
     std::cout << "Hello World!\n";
-    CN4::runConnectFour();
+    //CN4::runConnectFour();
+    TTT::runTTT();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
