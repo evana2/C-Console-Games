@@ -141,9 +141,11 @@
   <ItemGroup>
     <ClCompile Include="ConnectFour.cpp" />
     <ClCompile Include="Console Games.cpp" />
+    <ClCompile Include="TicTacToe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConnectFour.h" />
+    <ClInclude Include="TicTacToe.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

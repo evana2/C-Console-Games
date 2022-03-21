@@ -21,9 +21,15 @@
     <ClCompile Include="ConnectFour.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TicTacToe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConnectFour.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TicTacToe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
