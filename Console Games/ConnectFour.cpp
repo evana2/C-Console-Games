@@ -11,10 +11,32 @@ HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
 void CN4::runConnectFour() {
 
 	//TODO SELECT NUM PLAYERS
+	cout << "Do you have 1 or 2 players? ";
+	int playerCount;
+	cin >> playerCount;
+
+	while (1)
+	{
+		if (cin.fail() || !(playerCount == 1 || playerCount == 2))
+		{
+			cin.clear();
+			cin.ignore(1000, '\n');
+			cout << "That's not a valid number, please try again: ";
+			cin >> playerCount;
+		}
+		if (!std::cin.fail() && (playerCount == 1 || playerCount == 2)) {
+			break;
+		}
+	}
+
 	CN4::clearBoard();
 	CN4::printBoard();
-	CN4::onePlayer();
 
+	if (playerCount == 1) {
+		CN4::onePlayer();
+	} else {
+		CN4::twoPlayer();
+	}
 	
 }
 
