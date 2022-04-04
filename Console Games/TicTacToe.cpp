@@ -41,9 +41,34 @@ void printTopLine() {
 
 
 void TTT::runTTT() {
-    char board[3][3] = { {' ', 'X', ' '}, { 'O', ' ', ' ' }, { 'X', ' ', ' ' } };
+
+    char board[3][3] = { {' ', ' ', ' '}, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
     printBoard(board);
+
+    while (!gameStatus(board)) {
+        //player turn 
+        int x;
+        int y;
+        std::cin >> x;
+        std::cin >> y;
+        board[x][y] = 'X';
+        printBoard(board);
+
+        //computer turn
+        std::cin >> x;
+        std::cin >> y;
+        board[x][y] = 'O';
+        printBoard(board);
+    }
+    int winner = gameStatus(board);
+    if (winner == 1) {
+        std::cout << "X WINS!!";
+    }
+    else {
+        std::cout << "O WINS!!";
+    }
 }
+
 
 void TTT::printBoard(char board[3][3]) {
     printTopLine();
@@ -82,5 +107,73 @@ void TTT::printBoard(char board[3][3]) {
 }
 
 int TTT::gameStatus(char board[3][3]) {
+    //check rows
+    for (int i = 0; i < 3; i++) {
+        char rowVal = board[i][0];
+        bool flag = true;
+        for (int j = 1; j < 3; j++) {
+            if (rowVal != board[i][j]) {
+                flag = false;
+                break;
+            }
+        }
+        if (rowVal != ' ' && flag) {
+            if (rowVal == 'X') {
+                return 1;
+            }
+            else {
+                return 2;
+            }
+        }
+    }
+    //check columns
+    for (int j = 0; j < 3; j++) {
+        char rowVal = board[0][j];
+        bool flag = true;
+        for (int i = 1; i < 3; i++) {
+            if (rowVal != board[i][j]) {
+                flag = false;
+                break;
+            }
+        }
+        if (rowVal != ' ' && flag) {
+            if (rowVal == 'X') {
+                return 1;
+            }
+            else {
+                return 2;
+            }
+        }
+    }
+    //check diagonals
+    char diVal1 = board[0][0];
+    char diVal2 = board[2][0];
+    bool flag1 = true;
+    bool flag2 = true;
+    for (int i = 1; i < 3; i++) {
+        if (flag1 && diVal1 != board[i][i]) {
+            flag1 = false;
+        }
+        if (flag2 && diVal2 != board[2 - i][i]) {
+            flag2 = false;
+        }
+    }
+    if (diVal1 != ' ' && flag1) {
+        if (diVal1 == 'X') {
+            return 1;
+        }
+        else {
+            return 2;
+        }
+    }
+    if (diVal2 != ' ' && flag2) {
+        if (diVal2 == 'X') {
+            return 1;
+        }
+        else {
+            return 2;
+        }
+    }
+
     return 0;
 }

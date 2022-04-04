@@ -10,24 +10,94 @@ HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
 
 void CN4::runConnectFour() {
 
+	//TODO SELECT NUM PLAYERS
+	CN4::clearBoard();
 	CN4::printBoard();
+	CN4::onePlayer();
+
+	
+}
+
+void CN4::clearBoard() {
+	for (int i = 0; i < BOARD_HEIGHT; i++) {
+		for (int j = 0; j < BOARD_WIDTH; j++) {
+			board[i][j] = 0;
+		}
+	}
+}
+
+void CN4::onePlayer() {
+
+	//TODO CHOOSE DIFFICULTY LEVEL
+	int difficulty = 1;
+
+
+	while (true) {
+		pair<int, int> lastPlay = CN4::userTurn(1);
+		CN4::printBoard();
+		if (CN4::gameOver(lastPlay, 1)) {
+			cout << "YOU WIN\n";
+			break;
+		}
+
+		lastPlay = CN4::computerTurn(2, difficulty);
+		CN4::printBoard();
+		if (CN4::gameOver(lastPlay, 2)) {
+			cout << "YOU LOSE :(\n";
+			break;
+		}
+	}
+}
+void CN4::twoPlayer() {
 	while (true) {
 
 		pair<int, int> lastPlay = CN4::userTurn(1);
 
 		CN4::printBoard();
-		if (CN4::gameOver(lastPlay)) {
-			cout << "RED WINS!!";
+		if (CN4::gameOver(lastPlay, 1)) {
+			cout << "RED WINS!!\n";
 			break;
 		}
 
 		lastPlay = CN4::userTurn(2);
 		CN4::printBoard();
-		if (CN4::gameOver(lastPlay)) {
-			cout << "YELLOW WINSS!!";
+		if (CN4::gameOver(lastPlay, 2)) {
+			cout << "YELLOW WINSS!!\n";
 			break;
 		}
 	}
+}
+
+pair<int, int> CN4::computerTurn(int player, int level) {
+	//check for any moves that grant immediate win
+	for (int i = 0; i < BOARD_WIDTH; i++) {
+		int row_drop = CN4::pieceFall(i);
+		pair<int, int> potential_move = make_pair(row_drop, i);
+
+		if (CN4::gameOver(potential_move, 2)) {
+			CN4::place(potential_move, player);
+			return potential_move;
+		}
+	}
+
+	//check for any moves that block players immediate win
+	for (int i = 0; i < BOARD_WIDTH; i++) {
+		int row_drop = CN4::pieceFall(i);
+		pair<int, int> potential_move = make_pair(row_drop, i);
+
+		if (CN4::gameOver(potential_move, 1)) {
+			CN4::place(potential_move, player);
+			return potential_move;
+		}
+	}
+
+	//random play
+	pair<int, int> potential_move;
+	do {
+		int col = rand() % BOARD_WIDTH;
+		potential_move = place(col, player);
+	} while (potential_move.first == -1);
+	return potential_move;
 }
 
 pair<int, int> CN4::userTurn(int player) {
@@ -113,35 +183,41 @@ void CN4::printBoard() {
 	CN4::setWhite();
 }
 
-bool CN4::gameOver(pair<int, int> lastPlay) {
-	int vertical = 1;//(|)
-	int horizontal = 1;//(-)
-	int diagonal1 = 1;//(\)
-	int diagonal2 = 1;//(/)
-
+bool CN4::gameOver(pair<int, int> lastPlay, int player) {
 	int a = lastPlay.first;
 	int b = lastPlay.second;
-	int player = board[a][b];
 
-	int i;//vertical
-	int ii;//horizontal
+	int i, j;
+
 	//check for vertical(|)
+	int vertical = 1;
 	for (i = a + 1; board[i][b] == player && i <= 5; i++, vertical++);//Check down
 	for (i = a - 1; board[i][b] == player && i >= 0; i--, vertical++);//Check up
 	if (vertical >= 4)return true;
+	
 	//check for horizontal(-)
-	for (ii = b - 1; board[a][ii] == player && ii >= 0; ii--, horizontal++);//Check left
-	for (ii = b + 1; board[a][ii] == player && ii <= 6; ii++, horizontal++);//Check right
+	int horizontal = 1;
+	for (j = b - 1; board[a][j] == player && j >= 0; j--, horizontal++);//Check left
+	for (j = b + 1; board[a][j] == player && j <= 6; j++, horizontal++);//Check right
 	if (horizontal >= 4) return true;
+	
 	//check for diagonal 1 (\)
-	for (i = a - 1, ii = b - 1; board[i][ii] == player && i >= 0 && ii >= 0; diagonal1++, i--, ii--);//up and left
-	for (i = a + 1, ii = b + 1; board[i][ii] == player && i <= 5 && ii <= 6; diagonal1++, i++, ii++);//down and right
+	int diagonal1 = 1;
+	for (i = a - 1, j = b - 1; i >= 0 && j >= 0 && board[i][j] == player; diagonal1++, i--, j--);//up and left
+	for (i = a + 1, j = b + 1; i <= 5 && j <= 6 && board[i][j] == player; diagonal1++, i++, j++);//down and right
 	if (diagonal1 >= 4) return true;
+	
 	//check for diagonal 2(/)
-	for (i = a - 1, ii = b + 1; board[i][ii] == player && i >= 0 && ii <= 6; diagonal2++, i--, ii++);//up and right
-	for (i = a + 1, ii = b - 1; board[i][ii] == player && i <= 5 && ii >= 0; diagonal2++, i++, ii--);//up and left
+	int diagonal2 = 1;
+	for (i = a - 1, j = b + 1; i >= 0 && j <= 6 && board[i][j] == player; diagonal2++, i--, j++);//up and right
+	for (i = a + 1, j = b - 1; i <= 5 && j >= 0 && board[i][j] == player; diagonal2++, i++, j--);//up and left
 	if (diagonal2 >= 4) return true;
+	
 	return false;
+}
+
+void CN4::place(pair<int, int> location, int player) {
+	board[location.first][location.second] = player;
 }
 
 pair<int, int> CN4::place(int col, int player) {
@@ -168,6 +244,28 @@ pair<int, int> CN4::place(int col, int player) {
 		return make_pair(-1, col);
 	}
 
+}
+int CN4::pieceFall(int col) {
+	if (col >= 0 && col < BOARD_WIDTH)
+	{
+		if (board[0][col] == 0) {
+			int i;
+			for (i = 0; board[i][col] == 0; i++)
+				if (i == 5) {
+					return i;
+				}
+			i--;
+			return i;
+
+		}
+		else {
+			return -1;
+		}
+
+	}
+	else {
+		return -1;
+	}
 }
 
 void CN4::setRed() {
